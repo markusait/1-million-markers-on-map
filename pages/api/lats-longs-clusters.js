@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+console.log('init')
 import Supercluster from 'supercluster';
 import { point } from '@turf/helpers';
 
@@ -20,11 +20,13 @@ const convertClustersToGeoJSON = (clusters) => {
   };
 };
 
-const points = generateRandomLatLongPoints(1_000_000);
+// const points = generateRandomLatLongPoints(1_000_000);
+const points = generateRandomLatLongPoints(1_000);
 const index = new Supercluster({ radius: 40, maxZoom: 16 });
 index.load(points);
 
 export default function handler(req, res) {
+  console.log('handler start')
   const bbox = req.query.bbox.split(',').map(Number);
   const zoom = parseInt(req.query.zoom, 10);
 
@@ -32,4 +34,7 @@ export default function handler(req, res) {
   const geojsonClusters = convertClustersToGeoJSON(clusters);
 
   res.status(200).json(geojsonClusters);
+  console.log('handler end')
 }
+
+console.log('done')
