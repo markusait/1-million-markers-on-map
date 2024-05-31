@@ -22,7 +22,8 @@ const convertClustersToGeoJSON = (clusters) => {
 };
 
 const initializeIndex = () => {
-  points = generateRandomLatLongPoints(500000); // Adjust the number of points based on your performance needs
+  const numberOfPoints = 1_000_000;
+  points = generateRandomLatLongPoints(numberOfPoints); 
   index = new Supercluster({ radius: 40, maxZoom: 16 });
   index.load(points);
 };
