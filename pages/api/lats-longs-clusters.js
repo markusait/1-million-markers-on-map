@@ -21,18 +21,17 @@ const convertClustersToGeoJSON = (clusters) => {
   };
 };
 
-const initializeIndex = () => {
-  const numberOfPoints = 1_000_000;
-  points = generateRandomLatLongPoints(numberOfPoints); 
+const initializeIndex = async () => {
+  points = generateRandomLatLongPoints(1_000_000); // Adjust the number of points based on your performance needs
   index = new Supercluster({ radius: 40, maxZoom: 16 });
   index.load(points);
 };
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   try {
     if (!index) {
       console.log('Initializing Supercluster index');
-      initializeIndex();
+      await initializeIndex();
     }
 
     const bbox = req.query.bbox.split(',').map(Number);
