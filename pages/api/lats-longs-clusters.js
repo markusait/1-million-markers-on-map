@@ -20,6 +20,7 @@ const convertClustersToGeoJSON = (clusters) => {
     features: clusters,
   };
 };
+console.log(`Available memory: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
 
 const initializeIndex = async () => {
   points = generateRandomLatLongPoints(1_000_000); // Adjust the number of points based on your performance needs
