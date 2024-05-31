@@ -1,0 +1,9 @@
+{
+    "version": 2,
+    "functions": {
+      "app/api/lats-longs-clusters.js": {
+        "memory": 128 
+      }
+    }
+  }
+  

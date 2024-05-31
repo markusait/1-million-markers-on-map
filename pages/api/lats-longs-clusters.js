@@ -26,6 +26,8 @@ const initializeIndex = async () => {
   points = generateRandomLatLongPoints(1_000_000); // Adjust the number of points based on your performance needs
   index = new Supercluster({ radius: 40, maxZoom: 16 });
   index.load(points);
+  const sizeInBytes = Buffer.byteLength(JSON.stringify(points));
+  console.log(`Size of points: ${sizeInBytes / 1024 / 1024} MB`);
 };
 
 export default async function handler(req, res) {
