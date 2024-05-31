@@ -1,7 +1,8 @@
-console.log('init')
 import Supercluster from 'supercluster';
 import { point } from '@turf/helpers';
 
+let index = null;
+let points = null;
 
 const generateRandomLatLongPoints = (n) => {
   const points = [];
@@ -20,21 +21,28 @@ const convertClustersToGeoJSON = (clusters) => {
   };
 };
 
-// const points = generateRandomLatLongPoints(1_000_000);
-const points = generateRandomLatLongPoints(1_000);
-const index = new Supercluster({ radius: 40, maxZoom: 16 });
-index.load(points);
+const initializeIndex = () => {
+  points = generateRandomLatLongPoints(500000); // Adjust the number of points based on your performance needs
+  index = new Supercluster({ radius: 40, maxZoom: 16 });
+  index.load(points);
+};
 
 export default function handler(req, res) {
-  console.log('handler start')
-  const bbox = req.query.bbox.split(',').map(Number);
-  const zoom = parseInt(req.query.zoom, 10);
+  try {
+    if (!index) {
+      console.log('Initializing Supercluster index');
+      initializeIndex();
+    }
 
-  const clusters = index.getClusters(bbox, zoom);
-  const geojsonClusters = convertClustersToGeoJSON(clusters);
+    const bbox = req.query.bbox.split(',').map(Number);
+    const zoom = parseInt(req.query.zoom, 10);
 
-  res.status(200).json(geojsonClusters);
-  console.log('handler end')
+    const clusters = index.getClusters(bbox, zoom);
+    const geojsonClusters = convertClustersToGeoJSON(clusters);
+
+    return res.status(200).json(geojsonClusters);
+  } catch (error) {
+    console.error('Error processing request:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
-
-console.log('done')
